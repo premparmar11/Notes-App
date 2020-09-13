@@ -8,17 +8,17 @@ const addNote = (title, body) => {
     let duplicateTitle = notes.filter(note => note.title === title);
 
     if(duplicateTitle.length != 0){
-        console.log(chalk.red.bold("Duplicate Note Found!"));
+        console.log(chalk.red.inverse("Duplicate Note Found!"));
     } else {
     fileNotes.notes.push({
         title,body
     });
     saveNote(fileNotes);
+    console.log(chalk.green.inverse("Note added"));
     }
 };
 
 const saveNote = (fileNotes) => {
-    console.log(chalk.green.bold("Note added"));
     fs.writeFileSync('./notes.json', JSON.stringify(fileNotes));
 }
 
@@ -33,6 +33,20 @@ const loadNotes = () => {
     }
 };
 
+const removeNote = (title) => {
+    let fileNotes = loadNotes();
+
+    let newFileNotes = fileNotes.notes.filter(note => note.title != title);
+
+    if(fileNotes.notes.length === newFileNotes.length){
+        console.log(chalk.red.inverse("No Notes Found to delete!"))
+    } else {
+        saveNote({notes : newFileNotes});
+        console.log(chalk.green.inverse("Note is deleted"))
+    }
+}
+
 module.exports = {
-    addNote : addNote
+    addNote : addNote,
+    removeNote : removeNote
 }
